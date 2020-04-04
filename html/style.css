@@ -1,0 +1,119 @@
+body {
+  font-family: sans-serif;
+  overflow: hidden;
+  display: none;
+}
+
+:root {
+  --background: #506be6;
+  --offwhite: #f1f1f1;
+}
+
+.dialog {
+  max-width: 50%;
+  max-height: 45%;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 25%;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  box-shadow: 0px 0px 50px 0px #000;
+  background-color: #f1f1f1;
+  overflow: hidden;
+  overflow-y: scroll;
+  opacity: 0.9;
+  display: flex;
+  flex-direction: column;
+}
+
+#menu-title h1 {
+  order: 1;
+  text-align: center;
+  background-color: var(--background);
+  color: white;
+  margin-top: 5px;
+  margin-right: 5px;
+  padding: 10px;
+}
+
+.help {
+  text-align: center;
+}
+
+#main-menu {
+  order: 2;
+}
+
+#menu-title {
+  order: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.main-actions,
+button {
+  background-color: var(--background);
+  color: white;
+  border: 0;
+  padding: 10px;
+}
+
+.main-actions {
+  margin-right: 5px;
+}
+
+.main-actions:last-child {
+  margin-right: -5px;
+}
+
+#register-menu,
+#view-menu,
+#edit-menu {
+  display: none;
+  order: 2;
+}
+
+.form-inputs {
+  margin-bottom: 5px;
+}
+
+.form-inputs label {
+  float: left;
+  width: 45%;
+}
+
+.form-inputs select,
+.form-inputs input {
+  width: 45%;
+}
+
+.form-inputs input,
+.form-inputs select {
+  float: right;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) {
+  background: #eee;
+}
+th {
+  background: var(--background);
+  color: white;
+  font-weight: bold;
+}
+td,
+th {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
