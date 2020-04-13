@@ -65,7 +65,7 @@ with
 
 - If using ESX RPChat removed the OOC tag. If you want OOC back in add to your esx_rpchat `server/main.lua`:
 
-````
+```
 RegisterCommand('ooc', function(playerId, args, rawCommand)
 	if playerId == 0 then
 		print('esx_rpchat: you can\'t use this command from console!')
