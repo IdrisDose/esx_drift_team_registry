@@ -38,6 +38,7 @@ AddEventHandler('esx_team_registry:showTeamManagement', function(data)
 	if not isDead then
 		EnableGui(true)
 		teams = data.teamdata
+		types = data.teamtypes
 	end
 end)
 
@@ -60,7 +61,7 @@ end)
 
 RegisterNetEvent('esx_team_registry:saveTypes')
 AddEventHandler('esx_team_registry:saveTypes', function(data)
-	types = data.types
+	types = data.teamtypes
 end)
 
 RegisterNUICallback('escape', function(data, cb)
@@ -132,6 +133,10 @@ RegisterNUICallback('team/tag', function(data,cb)
 		end
 	end
 	cb('ok')
+end)
+
+RegisterNUICallback('team/types', function(data,cb)
+	cb({status = "success", types = types})
 end)
 
 AddEventHandler('onResourceStop', function(resource)

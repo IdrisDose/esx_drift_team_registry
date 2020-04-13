@@ -97,6 +97,12 @@ function getTeams(callback)
 	end)
 end
 
+function getTeamTypes(callback)
+	MySQL.Async.fetchAll('SELECT * FROM `team_type`' ,  nil, function(result)
+		callback(result)
+	end)
+end
+
 function getPlayerTeams(data, callback)
 	MySQL.Async.fetchAll('SELECT team.id, team.name, team.tag, team.color, type.type as type FROM team_registry team, team_players player, team_type type WHERE team.id = player.team_id AND type.id = team.type AND player.identifier = @identifier',{
 		['@identifier'] = data.identifier
@@ -223,6 +229,25 @@ AddEventHandler('esx_team_registry:getTeams', function(source)
 	end)
 end)
 
+RegisterServerEvent('esx_team_registry:getTeamTypes')
+AddEventHandler('esx_team_registry:getTeamTypes', function(source)
+	getTeams(function(data)
+		local types = {}
+		for k,v in pairs(types) do
+			table.insert(teams, {
+				id = v.id,
+				type = v.type
+			})
+		end
+
+		local data = {
+			teamtypes = types
+		}
+
+		TriggerClientEvent('esx_team_registry:saveTypes', source, data)
+	end)
+end)
+
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Citizen.Wait(3000)
@@ -249,8 +274,6 @@ AddEventHandler('chatMessage', function(source, name, message)
 				local player = GetPlayerIdentifiers(source)[1]
 				local prefix = "";
 				getPlayerTeams({identifier = player}, function(result)
-
-
 					if Config.Executives[player] then
 						prefix = Config.Tags["exec"]
 					elseif Config.Developers[player] then
@@ -272,13 +295,13 @@ AddEventHandler('chatMessage', function(source, name, message)
 						if prefix ~= '' then
 							name = prefix .. Config.Seperator .. name
 						end
+
 					else
 
-						if prefix then
-							if prefix ~= '' then
-								prefix = Config.Seperator .. prefix
-							end
+						if prefix ~= '' then
+							prefix = Config.Seperator .. prefix
 						end
+
 
 						for k,v in pairs(result) do
 							prefix = '^' .. v.color .. v.tag .. Config.Seperator .. prefix
@@ -286,7 +309,6 @@ AddEventHandler('chatMessage', function(source, name, message)
 
 						name = name .. prefix
 					end
-
 
 					TriggerClientEvent('chat:addMessage', -1, { args = {  name, message}, color = { 128, 128, 128 } })
 				end)
@@ -308,11 +330,23 @@ TriggerEvent('es:addGroupCommand', 'teams','user', function(source, args, user)
 			})
 		end
 
-		local data = {
-			teamdata = teams
-		}
+		getTeamTypes(function(data)
+			local types = {}
 
-		TriggerClientEvent('esx_team_registry:showTeamManagement', source, data)
+			for k,v in pairs(data) do
+				table.insert(types, {
+					id = v.id,
+					type = v.type
+				})
+			end
+
+			local data = {
+				teamdata = teams,
+				teamtypes =  types
+			}
+
+			TriggerClientEvent('esx_team_registry:showTeamManagement', source, data)
+		end)
 	end)
 end, function(source, args, user)
 	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient permissions!' } })
