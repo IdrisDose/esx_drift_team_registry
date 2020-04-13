@@ -66,18 +66,20 @@ with
 - If using ESX RPChat removed the OOC tag. If you want OOC back in add to your esx_rpchat `server/main.lua`:
 
 ```
-RegisterCommand('ooc', function(playerId, args, rawCommand)
-	if playerId == 0 then
-		print('esx_rpchat: you can\'t use this command from console!')
-	else
-		args = table.concat(args, ' ')
-		local playerName = GetRealPlayerName(playerId)
-
-		TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', playerName), args }, color = { 128, 128, 128 } })
+RegisterCommand('ooc', function(source, args, rawCommand)
+	if source == 0 then
+		print('esx_rpchat: you can\'t use this command from rcon!')
+		return
 	end
+
+	args = table.concat(args, ' ')
+	local name = GetPlayerName(source)
+	if Config.EnableESXIdentity then name = GetCharacterName(source) end
+
+	TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', name), args }, color = { 0, 153, 204 } })
+	--print(('%s: %s'):format(name, args))
 end, false)
 ```
-
 
 # Legal
 
@@ -92,4 +94,7 @@ This program Is free software: you can redistribute it And/Or modify it under th
 This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
 
 You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
-````
+
+```
+
+```
