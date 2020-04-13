@@ -76,7 +76,7 @@ RegisterCommand('ooc', function(source, args, rawCommand)
 	local name = GetPlayerName(source)
 	if Config.EnableESXIdentity then name = GetCharacterName(source) end
 
-	TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', name), args }, color = { 0, 153, 204 } })
+	TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', name), args }, color = { 128, 128, 128 } })
 	--print(('%s: %s'):format(name, args))
 end, false)
 ```
