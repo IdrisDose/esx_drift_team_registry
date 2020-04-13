@@ -1,52 +1,40 @@
-# esx_identity
-
-## Requirements
-* Dependencies For Full Functionality
-  * [esx_skin](https://github.com/ESX-Org/esx_skin)
-  * [esx_policejob](https://github.com/ESX-Org/esx_policejob)
-  * [esx_society](https://github.com/ESX-Org/esx_society)
-
-## Download & Installation
-
-### Using [fvm](https://github.com/qlaffont/fvm-installer)
-```
-fvm install --save --folder=esx esx-org/esx_identity
-```
+# esx_drift_team_registry
 
 ### Using Git
+
 ```
 cd resources
-git clone https://github.com/ESX-Org/esx_identity [esx]/esx_identity
+git clone https://github.com/IdrisDose/esx_drift_team_registry [esx]/esx_drift_team_registry
 ```
 
 ### Manually
-- Download https://github.com/ESX-Org/esx_identity/archive/master.zip
+
+- Download https://github.com/IdrisDose/esx_drift_team_registry
 - Put it in the `[esx]` directory
 
 ## Installation
+
 - Import `esx_identity.sql` in your database
-- Add this to your `server.cfg`:
+- Add this to your `server.cfg` (ignore stop rolesFX if you dont use it):
 
 ```
-start esx_identity
+start esx_drift_team_registry
+stop rolesFX
 ```
-
-- If you are using esx_policejob or esx_society, you need to enable the following in the scripts' `config.lua`:
-```Config.EnableESXIdentity          = true```
 
 ### Commands
+
 ```
-/register
-/charlist
-/charselect
-/chardel
+/teams
 ```
 
 # Legal
-### License
-esx_identity - rp characters
 
-Copyright (C) 2015-2018 Jérémie N'gadi
+### License
+
+esx_drift_team_registry - rp characters
+
+Copyright (C) 2020 IdrisDose (https://github.com/IdrisDose)
 
 This program Is free software: you can redistribute it And/Or modify it under the terms Of the GNU General Public License As published by the Free Software Foundation, either version 3 Of the License, Or (at your option) any later version.
 
