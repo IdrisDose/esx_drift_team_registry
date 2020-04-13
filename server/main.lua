@@ -248,24 +248,6 @@ AddEventHandler('chatMessage', function(source, name, message)
 
 				local player = GetPlayerIdentifiers(source)[1]
 				local prefix = "";
-				local drift = {
-					enabled = false,
-					color = "",
-					tag = ""
-				}
-
-				local grip = {
-					enabled = false,
-					color = "",
-					tag = ""
-				}
-
-				local offroad = {
-					enabled = false,
-					color = "",
-					tag = ""
-				}
-
 				getPlayerTeams({identifier = player}, function(result)
 
 
