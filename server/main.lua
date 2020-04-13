@@ -2,6 +2,65 @@ ESX = nil
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 Config = Config or {}
 
+
+local function printTable(t,indent)
+
+	local function printTableFunc(t,indent)
+		if indent == nil then indent = "" end
+		local returnTable = {}
+		for key,value in pairs(t) do
+			if type(value) == "table" then
+				local indent2 = indent.."["..key.."]"
+				table.insert(returnTable,{["value"]=value,["indent"]=indent2})
+			elseif type(value) == "string" or type(value) == "number" then
+				local prefix = ""
+				prefix = indent
+				print(prefix.."["..key.."]".." -> ","","VALUE == "..value)
+			elseif type(value) == "boolean" then
+				local prefix = ""
+				prefix = indent
+				print(prefix.."["..key.."]".." -> ","","BOOLEAN == "..tostring(value))
+			else
+				local value = type(value)
+				local prefix = ""
+				if indent ~= nil then prefix = indent end
+				print(prefix.."["..key.."]".." -> ","","TYPE == "..value)
+			end
+		end
+		return returnTable
+	end
+
+	local function callLocal(value,indent2)
+		if value ~= nil then
+			if type(value) == "table" then
+				local currentValue,currentIndent = "",""
+				returnedTable = printTableFunc(value,indent2)
+				if returnedTable ~= nil then
+					for key,t in pairs(returnedTable) do
+						callLocal(t.value,t.indent)
+					end
+				end
+			elseif type(value) == "string" or type(value) == "number" then
+				local prefix = ""
+				prefix = indent
+				print(prefix.." -> ","","VALUE == "..value)
+			elseif type(value) == "boolean" then
+				local prefix = ""
+				prefix = indent
+				print(prefix.." -> ","","BOOLEAN == "..tostring(value))
+			else
+				local value = type(value)
+				local prefix = ""
+				if indent ~= nil then prefix = indent end
+				print(prefix.." -> ","","TYPE == "..value)
+			end
+		end
+	end
+
+	callLocal(t,indent)
+end
+
+
 function getTeam(id, callback)
 
 	MySQL.Async.fetchAll('SELECT id,name,tag,type FROM `team_registry` WHERE `id` = @identifier', {
@@ -87,63 +146,63 @@ function deleteTeam(id, callback)
 	end)
 end
 
-RegisterServerEvent('esx_drift_teams:createTeam')
-AddEventHandler('esx_drift_teams:createTeam', function(data, source)
+RegisterServerEvent('esx_team_registry:createTeam')
+AddEventHandler('esx_team_registry:createTeam', function(data, source)
 	createTeam(data, function(callback)
 		if callback ~= true then
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Failed to create team, try again later or contact the server admin!' } })
 			local resData = {status = true, message = 'Failed to create team, try again later or contact the server admin!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		else
-			TriggerEvent('esx_drift_teams:getTeams',source)
+			TriggerEvent('esx_team_registry:getTeams',source)
 
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Created team!' } })
 			local resData = {status = true, message = 'Created team!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		end
 	end)
 end)
 
-RegisterServerEvent('esx_drift_teams:updateTeam')
-AddEventHandler('esx_drift_teams:updateTeam', function(data, source)
+RegisterServerEvent('esx_team_registry:updateTeam')
+AddEventHandler('esx_team_registry:updateTeam', function(data, source)
 	-- Get Player Perms
 	updateTeam(data, function(callback)
 		if callback ~= true then
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Failed to create team, try again later or contact the server admin!' } })
 			local resData = {status = true, message = 'Failed to create team, try again later or contact the server admin!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		else
-			TriggerEvent('esx_drift_teams:getTeams',source)
+			TriggerEvent('esx_team_registry:getTeams',source)
 
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Updated team!' } })
 			local resData = {status = true, message = 'Updated team!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		end
 	end)
 end)
 
 
-RegisterServerEvent('esx_drift_teams:deleteTeam')
-AddEventHandler('esx_drift_teams:deleteTeam',function(teamId, source)
+RegisterServerEvent('esx_team_registry:deleteTeam')
+AddEventHandler('esx_team_registry:deleteTeam',function(teamId, source)
 	-- Get Player Perms
 	deleteTeam(teamId, function(result)
 		if result ~= true then
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Failed to delete team, try again later or contact the server admin!' } })
 			local resData = {status = true, message = 'Failed to create team, try again later or contact the server admin!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		else
-			TriggerEvent('esx_drift_teams:getTeams',source)
+			TriggerEvent('esx_team_registry:getTeams',source)
 
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Deleted team!' } })
 			local resData = {status = true, message = 'Deleted team!' }
-			TriggerClientEvent('esx_drift_teams:sendErrorNotification', source, resData)
+			TriggerClientEvent('esx_team_registry:sendErrorNotification', source, resData)
 		end
 	end)
 
 end)
 
-RegisterServerEvent('esx_drift_teams:getTeams')
-AddEventHandler('esx_drift_teams:getTeams', function(source)
+RegisterServerEvent('esx_team_registry:getTeams')
+AddEventHandler('esx_team_registry:getTeams', function(source)
 	getTeams(function(data)
 		local teams = {}
 		for k,v in pairs(data) do
@@ -160,7 +219,7 @@ AddEventHandler('esx_drift_teams:getTeams', function(source)
 			teamdata = teams
 		}
 
-		TriggerClientEvent('esx_drift_teams:saveTeams', source, data)
+		TriggerClientEvent('esx_team_registry:saveTeams', source, data)
 	end)
 end)
 
@@ -178,7 +237,7 @@ AddEventHandler('onResourceStart', function(resource)
 				id = xPlayer.source
 			}
 
-			TriggerClientEvent('esx_drift_teams:setPlayerData', xPlayer.source, myID)
+			TriggerClientEvent('esx_team_registry:setPlayerData', xPlayer.source, myID)
 		end
 	end
 end)
@@ -271,7 +330,7 @@ TriggerEvent('es:addGroupCommand', 'teams','user', function(source, args, user)
 			teamdata = teams
 		}
 
-		TriggerClientEvent('esx_drift_teams:showTeamManagement', source, data)
+		TriggerClientEvent('esx_team_registry:showTeamManagement', source, data)
 	end)
 end, function(source, args, user)
 	TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient permissions!' } })

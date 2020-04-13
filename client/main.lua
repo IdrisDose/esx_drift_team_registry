@@ -1,5 +1,6 @@
 local guiEnabled = false
 local teams = {}
+local types = {}
 local plyData = {}
 local isDead = false
 
@@ -32,29 +33,34 @@ function EnableGui(state)
 	})
 end
 
-RegisterNetEvent('esx_drift_teams:showTeamManagement')
-AddEventHandler('esx_drift_teams:showTeamManagement', function(data)
+RegisterNetEvent('esx_team_registry:showTeamManagement')
+AddEventHandler('esx_team_registry:showTeamManagement', function(data)
 	if not isDead then
 		EnableGui(true)
 		teams = data.teamdata
 	end
 end)
 
-RegisterNetEvent('esx_drift_teams:saveTeams')
-AddEventHandler('esx_drift_teams:saveTeams', function(data)
+RegisterNetEvent('esx_team_registry:saveTeams')
+AddEventHandler('esx_team_registry:saveTeams', function(data)
 	teams = data.teamdata
 end)
 
-RegisterNetEvent('esx_drift_teams:setPlayerData')
-AddEventHandler('esx_drift_teams:setPlayerData', function(data)
+RegisterNetEvent('esx_team_registry:setPlayerData')
+AddEventHandler('esx_team_registry:setPlayerData', function(data)
 	plyData = data
 end)
 
-RegisterNetEvent('esx_drift_teams:sendErrorNotification')
-AddEventHandler('esx_drift_teams:sendErrorNotification', function(error)
+RegisterNetEvent('esx_team_registry:sendErrorNotification')
+AddEventHandler('esx_team_registry:sendErrorNotification', function(error)
 	if error.status == true then
 		ESX.ShowNotification('^1[TEAMS]^7: '..error.message)
 	end
+end)
+
+RegisterNetEvent('esx_team_registry:saveTypes')
+AddEventHandler('esx_team_registry:saveTypes', function(data)
+	types = data.types
 end)
 
 RegisterNUICallback('escape', function(data, cb)
@@ -63,7 +69,7 @@ RegisterNUICallback('escape', function(data, cb)
 end)
 
 RegisterNUICallback('teams', function(data, cb)
-	-- TriggerServerEvent('esx_drift_teams:getTeams', plyData.id)
+	-- TriggerServerEvent('esx_team_registry:getTeams', plyData.id)
 	local resData = { status = "success", data = teams }
 	cb(resData)
 end)
@@ -83,7 +89,7 @@ RegisterNUICallback('team/register', function(data, cb)
 			returnData.type = v.value
 		end
 	end
-	TriggerServerEvent('esx_drift_teams:createTeam', returnData, plyData.id)
+	TriggerServerEvent('esx_team_registry:createTeam', returnData, plyData.id)
 
 	local resData = { status = "success" }
 	cb(resData)
@@ -106,14 +112,14 @@ RegisterNUICallback('team/edit', function(data, cb)
 		end
 	end
 
-	TriggerServerEvent('esx_drift_teams:updateTeam', returnData, plyData.id)
+	TriggerServerEvent('esx_team_registry:updateTeam', returnData, plyData.id)
 
 	local resData = { status = "success" }
 	cb(resData)
 end)
 
 RegisterNUICallback('team/delete', function(data,cb)
-	TriggerServerEvent('esx_drift_teams:deleteTeam', data.teamid, plyData.id)
+	TriggerServerEvent('esx_team_registry:deleteTeam', data.teamid, plyData.id)
 
 	local resData = { status = "success", data = teams }
 	cb(resData)

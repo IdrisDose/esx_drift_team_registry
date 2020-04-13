@@ -1,15 +1,21 @@
-# esx_drift_team_registry
+# esx_team_registry
+
+### Features
+
+- In-Game Chat Tags (replaces the esx_rpchat chat message thingo)
+- Creating Teams for Players to join can be used as organisations
+- Admin Managed
 
 ### Using Git
 
 ```
 cd resources
-git clone https://github.com/IdrisDose/esx_drift_team_registry [esx]/esx_drift_team_registry
+git clone https://github.com/IdrisDose/esx_team_registry [esx]/esx_team_registry
 ```
 
 ### Manually
 
-- Download https://github.com/IdrisDose/esx_drift_team_registry
+- Download https://github.com/IdrisDose/esx_team_registry
 - Put it in the `[esx]` directory
 
 ## Installation
@@ -18,8 +24,35 @@ git clone https://github.com/IdrisDose/esx_drift_team_registry [esx]/esx_drift_t
 - Add this to your `server.cfg` (ignore stop rolesFX if you dont use it):
 
 ```
-start esx_drift_team_registry
+start esx_team_registry
 stop rolesFX
+```
+
+- If using esx_rpchat replace in `server/main.lua`:
+
+```
+AddEventHandler('chatMessage', function(playerId, playerName, message)
+	if string.sub(message, 1, string.len('/')) ~= '/' then
+		CancelEvent()
+
+		playerName = GetRealPlayerName(playerId)
+		TriggerClientEvent('chat:addMessage', -1, {args = {_U('ooc_prefix', playerName), message}, color = {128, 128, 128}})
+	end
+end)
+```
+
+with
+
+```
+-- AddEventHandler('chatMessage', function(source, name, message)
+-- 	if string.sub(message, 1, string.len('/')) ~= '/' then
+-- 		CancelEvent()
+
+-- 		if Config.EnableESXIdentity then name = GetCharacterName(source) end
+
+-- 		TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', name), message }, color = { 128, 128, 128 } })
+-- 	end
+-- end)
 ```
 
 ### Commands
@@ -28,11 +61,28 @@ stop rolesFX
 /teams
 ```
 
+### Issues
+
+- If using ESX RPChat removed the OOC tag. If you want OOC back in add:
+
+````
+RegisterCommand('ooc', function(playerId, args, rawCommand)
+	if playerId == 0 then
+		print('esx_rpchat: you can\'t use this command from console!')
+	else
+		args = table.concat(args, ' ')
+		local playerName = GetRealPlayerName(playerId)
+
+		TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', playerName), args }, color = { 128, 128, 128 } })
+	end
+end, false)
+``` to your esx_rpchat `server/main.lua`
+
 # Legal
 
 ### License
 
-esx_drift_team_registry - rp characters
+esx_team_registry - rp characters
 
 Copyright (C) 2020 IdrisDose (https://github.com/IdrisDose)
 
@@ -41,3 +91,4 @@ This program Is free software: you can redistribute it And/Or modify it under th
 This program Is distributed In the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty Of MERCHANTABILITY Or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License For more details.
 
 You should have received a copy Of the GNU General Public License along with this program. If Not, see http://www.gnu.org/licenses/.
+````
