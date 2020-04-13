@@ -1,7 +1,6 @@
 ESX = nil
-
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-
+Config = Config or {}
 
 function getTeam(id, callback)
 
@@ -34,7 +33,15 @@ function getTeam(id, callback)
 end
 
 function getTeams(callback)
-	MySQL.Async.fetchAll('SELECT * FROM `team_registry`',  nil, function(result)
+	MySQL.Async.fetchAll('SELECT team.id as id, team.name as name, type.type as type, team.tag as tag, team.color as color FROM `team_registry` team, `team_type` type WHERE team.type = type.id' ,  nil, function(result)
+		callback(result)
+	end)
+end
+
+function getPlayerTeams(data, callback)
+	MySQL.Async.fetchAll('SELECT team.id, team.name, team.tag, team.color, type.type as type FROM team_registry team, team_players player, team_type type WHERE team.id = player.team_id AND type.id = team.type AND player.identifier = @identifier',{
+		['@identifier'] = data.identifier
+	}, function(result)
 		callback(result)
 	end)
 end
@@ -82,8 +89,6 @@ end
 
 RegisterServerEvent('esx_drift_teams:createTeam')
 AddEventHandler('esx_drift_teams:createTeam', function(data, source)
-	-- Get Player Perms
-
 	createTeam(data, function(callback)
 		if callback ~= true then
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Failed to create team, try again later or contact the server admin!' } })
@@ -102,7 +107,6 @@ end)
 RegisterServerEvent('esx_drift_teams:updateTeam')
 AddEventHandler('esx_drift_teams:updateTeam', function(data, source)
 	-- Get Player Perms
-
 	updateTeam(data, function(callback)
 		if callback ~= true then
 			TriggerClientEvent('chat:addMessage', source, { args = { '^1[TEAMS]', 'Failed to create team, try again later or contact the server admin!' } })
@@ -177,6 +181,75 @@ AddEventHandler('onResourceStart', function(resource)
 			TriggerClientEvent('esx_drift_teams:setPlayerData', xPlayer.source, myID)
 		end
 	end
+end)
+
+AddEventHandler('chatMessage', function(source, name, message)
+		if string.sub(message, 1, string.len('/')) ~= '/' then
+				CancelEvent()
+
+				local player = GetPlayerIdentifiers(source)[1]
+				local prefix = "";
+				local drift = {
+					enabled = false,
+					color = "",
+					tag = ""
+				}
+
+				local grip = {
+					enabled = false,
+					color = "",
+					tag = ""
+				}
+
+				local offroad = {
+					enabled = false,
+					color = "",
+					tag = ""
+				}
+
+				getPlayerTeams({identifier = player}, function(result)
+
+
+					if Config.Executives[player] then
+						prefix = Config.Tags["exec"]
+					elseif Config.Developers[player] then
+						prefix = Config.Tags["dev"]
+					elseif Config.Admins[player] then
+						prefix = Config.Tags["admin"]
+					elseif Config.Supports[player] then
+						prefix = Config.Tags["supp"]
+					elseif Config.Donators[player] then
+						prefix = Config.Tags["donator"]
+					end
+
+					if Config.IsPrefix then
+
+						for k,v in pairs(result) do
+							prefix = prefix .. Config.Seperator .. '^' .. v.color .. v.tag
+						end
+
+						if prefix ~= '' then
+							name = prefix .. Config.Seperator .. name
+						end
+					else
+
+						if prefix then
+							if prefix ~= '' then
+								prefix = Config.Seperator .. prefix
+							end
+						end
+
+						for k,v in pairs(result) do
+							prefix = '^' .. v.color .. v.tag .. Config.Seperator .. prefix
+						end
+
+						name = name .. prefix
+					end
+
+
+					TriggerClientEvent('chat:addMessage', -1, { args = {  name, message}, color = { 128, 128, 128 } })
+				end)
+    end
 end)
 
 TriggerEvent('es:addGroupCommand', 'teams','user', function(source, args, user)
