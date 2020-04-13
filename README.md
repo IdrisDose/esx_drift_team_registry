@@ -63,6 +63,8 @@ with
 
 ### Issues
 
+- May conflict with anything that has `AddEventHandler('chatMessage'` within it to resolve the issue comment out the handler and post an issue with a link to the source code.
+
 - If using ESX RPChat removed the OOC tag. If you want OOC back in add to your esx_rpchat `server/main.lua`:
 
 ```
