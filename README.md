@@ -63,7 +63,7 @@ with
 
 ### Issues
 
-- If using ESX RPChat removed the OOC tag. If you want OOC back in add:
+- If using ESX RPChat removed the OOC tag. If you want OOC back in add to your esx_rpchat `server/main.lua`:
 
 ````
 RegisterCommand('ooc', function(playerId, args, rawCommand)
@@ -76,7 +76,8 @@ RegisterCommand('ooc', function(playerId, args, rawCommand)
 		TriggerClientEvent('chat:addMessage', -1, { args = { _U('ooc_prefix', playerName), args }, color = { 128, 128, 128 } })
 	end
 end, false)
-``` to your esx_rpchat `server/main.lua`
+```
+
 
 # Legal
 
