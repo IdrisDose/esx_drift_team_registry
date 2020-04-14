@@ -2,7 +2,7 @@ CREATE TABLE `team_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;;
 
 CREATE TABLE `team_registry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -12,7 +12,7 @@ CREATE TABLE `team_registry` (
   `type` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`type`) REFERENCES `team_type`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;;
 
 CREATE TABLE `team_players` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -23,18 +23,10 @@ CREATE TABLE `team_players` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`team_id`) REFERENCES `team_registry`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`team_id`) REFERENCES `team_type`(`id`) ON DELETE CASCADE
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;;
 
 
-ALTER TABLE
-  `team_players` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-ALTER TABLE
-  `team_registry` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-ALTER TABLE
-  `team_type` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
-
-INSERT INTO `team_type` (type`) VALUES
+INSERT INTO `team_type` (type) VALUES
 ('Drift'),
 ('Grip'),
 ('Off-Road');
