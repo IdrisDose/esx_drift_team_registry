@@ -20,7 +20,7 @@ git clone https://github.com/IdrisDose/esx_team_registry [esx]/esx_team_registry
 
 ## Installation
 
-- Import `esx_identity.sql` in your database
+- Import `esx_team_registry.sql` in your database
 - Add this to your `server.cfg` (ignore stop rolesFX if you dont use it):
 
 ```
